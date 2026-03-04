@@ -1,25 +1,70 @@
 ---
 title: "Collaborator Analysis"
 format: html
+author: Raven Dawson
 ---
 
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+# loading libraries
 
 ```{r}
-1 + 1
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(here)
 ```
 
-You can add options to executable code like this 
+
+- read in data
 
 ```{r}
-#| echo: false
-2 * 2
+lobster_traps <- read_csv("../data/Lobster_Trap_Counts_All_Years_20210519.csv")
+```
+- looking at the data
+
+```{r}
+head(lobster_traps)
+
+```
+# 1
+
+```{r}
+unique(lobster_traps$TRAPS)
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+```{r}
+lob_clean <- lobster_traps %>%
+  mutate(TRAPS = ifelse(TRAPS == -99999, NA, TRAPS))
+```
+
+```{r}
+unique(lob_clean$TRAPS)
+```
+
+# 2
+```{r}
+no_NAPL <- lob_clean %>% 
+  filter(SITE != "NAPL")
+
+unique(no_NAPL$SITE)
+unique(lob_clean$SITE)
+```
+
+# 3
+```{r}
+CARP_20 <- lob_clean %>% 
+  filter(SITE == "CARP" & TRAPS > 20)
+
+```
+
+# 4 
+```{r}
+max_lob <- lob_clean %>%
+  group_by(SITE, MONTH) %>%
+  summarise(max_traps = max(TRAPS, na.rm = TRUE))
+```
+
+
+
+
+
