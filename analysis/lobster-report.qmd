@@ -1,25 +1,43 @@
 ---
 title: "Lobster Report"
 format: html
+authors: "Rachel de Sobrino, Raven Dawson"
+bibliography: references.bib
 ---
 
-## Quarto
+## Data
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
-```{r}
-1 + 1
-```
-
-You can add options to executable code like this 
+Data on abundance, size and fishing pressure of California spiny lobster (Panulirus interruptus) are collected along the mainland coast of the Santa Barbara Channel. Spiny lobsters are an important predator in giant kelp forests off southern California. [@lter2022]
 
 ```{r}
 #| echo: false
-2 * 2
+#| warning: false
+library(dplyr)
+library(ggplot2)
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+## When and where are lobsters found?
+```{r}
+lobster_clean <- lobster_abundance %>% 
+  mutate(SIZE_MM = na_if(SIZE_MM, -99999))
+
+lobster_summarize <- lobster_clean %>% 
+  group_by(SITE, YEAR) %>% 
+  summarize(COUNT = n()) ## what's this?? 
+
+ggplot(data = lobster_summarize, aes(x = YEAR, y=COUNT, color=SITE)) + 
+  geom_line() +
+  geom_point()
+ggsave("../figs/v1.png")
+```
+## How big are the lobsters?
+```{r}
+ggplot(data=lobster_size_lrg, aes(x=SIZE_BIN, y = COUNT)) +
+  geom_col(aes(fill=SIZE_BIN)) +
+  labs(title = "Sizes of Lobsters", x = "Size", y = "Count") +
+  theme_minimal() +
+  theme(plot.background = element_rect(fill = "green"))
+
+  ggsave("../figs/v2.png")
+```
+
