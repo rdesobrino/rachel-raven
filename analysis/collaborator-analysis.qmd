@@ -26,7 +26,10 @@ lobster_traps <- read_csv("../data/Lobster_Trap_Counts_All_Years_20210519.csv")
 head(lobster_traps)
 
 ```
-# 1
+
+# messing with the data
+
+## 1
 
 ```{r}
 unique(lobster_traps$TRAPS)
@@ -41,7 +44,7 @@ lob_clean <- lobster_traps %>%
 unique(lob_clean$TRAPS)
 ```
 
-# 2
+## 2
 ```{r}
 no_NAPL <- lob_clean %>% 
   filter(SITE != "NAPL")
@@ -50,21 +53,94 @@ unique(no_NAPL$SITE)
 unique(lob_clean$SITE)
 ```
 
-# 3
+## 3
 ```{r}
 CARP_20 <- lob_clean %>% 
   filter(SITE == "CARP" & TRAPS > 20)
 
 ```
 
-# 4 
+## 4 
 ```{r}
 max_lob <- lob_clean %>%
   group_by(SITE, MONTH) %>%
   summarise(max_traps = max(TRAPS, na.rm = TRUE))
 ```
 
+# Exercise: Data Visualization
+## 6
+```{r}
+ggplot(data= lob_clean, aes(x=TRAPS))+
+  geom_histogram()+
+  facet_wrap(~YEAR)
+```
 
+```{r}
+lobsters_traps_summarize<-lob_clean %>% 
+  group_by(SITE, YEAR) %>%
+  summarise(all_traps = sum(TRAPS, na.rm = TRUE))
+```
+
+
+
+
+```{r}
+ggplot(data= lobsters_traps_summarize, aes(x=YEAR, y=all_traps, color= SITE))+
+  geom_line()
+```
+
+## 7 
+
+```{r}
+lobster_traps_fishing_pressure <-lob_clean %>% 
+  filter(YEAR == c("2019", "2020", "2021"))
+```
+
+```{r}
+lobster_traps_fishing_pressure <- lobster_traps_fishing_pressure %>%
+  mutate(pressure = ifelse(TRAPS >= 8, "High", "Low")) %>% 
+  group_by(SITE, pressure) %>% 
+  summarise(n=n()) %>% 
+  drop_na()
+```
+
+
+```{r}
+ggplot(data = lobster_traps_fishing_pressure, aes(x=SITE, y=n, fill = pressure))+
+  geom_col()
+```
+
+
+
+```{r}
+
+p1<- ggplot(lobster_traps_fishing_pressure,
+       aes(x = SITE, y = n, fill = pressure)) +
+  
+  geom_col(width = 0.7, color = "black", linewidth = 0.3) +
+  
+  labs(
+    x = "Site",
+    y = "Counts",
+    fill = "Fishing Pressure"
+  ) +
+  
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.title = element_text(face = "bold"),
+    axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1, color = "black"),
+    axis.text.y = element_text(color = "black"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank()
+  )
+
+p1
+```
+
+
+```{r}
+ggsave("../figs/figure1.png", p1, width = 9, height = 5)
+```
 
 
 
