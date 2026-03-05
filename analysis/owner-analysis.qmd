@@ -37,11 +37,43 @@ head(lobster_big_AQUE)
 ```
 ```{r}
 max(lobster_abundance$SIZE_MM)
+max(lobster_abundance$SIZE_MM, na.rm = TRUE)
 
 lobster_size_mon <- lobster_clean %>% 
-  group_by(SIZE_MM, MONTH)
+  group_by(SITE, MONTH) %>% 
+  summarize(MAX_LENGTH = max(SIZE_MM, na.rm = TRUE))
 
 head(lobster_size_mon)
+```
+## Exercise Data Visualization
+```{r}
+ggplot(lobster_clean, aes(x = SIZE_MM )) +
+  geom_histogram() + facet_wrap(vars(SITE)) 
+```
+```{r}
+lobster_summarize <- lobster_clean %>% 
+  group_by(SITE, YEAR) %>% 
+  summarize(COUNT = n()) ## what's this?? 
+
+head(lobster_summarize)
+```
+```{r}
+ggplot(data = lobster_summarize, aes(x = YEAR, y=COUNT, color=SITE)) + 
+  geom_line() +
+  geom_point() 
+```
+```{r}
+lobster_size_lrg <- lobster_clean %>% 
+  filter(YEAR %in% c("2019", "2020", "2021")) %>% 
+  mutate(SIZE_BIN = if_else(SIZE_MM <= 70, "SMALL", "LARGE")) %>% 
+  group_by(SIZE_BIN) %>% 
+  summarize(COUNT = n()) %>% 
+  drop_na()
+lobster_size_lrg
+```
+```{r}
+ggplot(data=lobster_size_lrg, aes(x=SIZE_BIN, y = COUNT)) +
+  geom_bar()
 ```
 
 
