@@ -28,4 +28,4 @@ The `echo: false` option disables the printing of code (only output is displayed
 
 We looked at how fishing pressure were spread out over the different fishing locations
 
-![Fishing pressure](figure1.png)("../figs/figure1.png")
+![Fishing pressure](../figs/figure1.png)
