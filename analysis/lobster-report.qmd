@@ -15,7 +15,7 @@ When you click the **Render** button a document will be generated that includes 
 1 + 1
 ```
 
-You can add options to executable code like this 
+You can add options to executable code like this
 
 ```{r}
 #| echo: false
@@ -23,3 +23,9 @@ You can add options to executable code like this
 ```
 
 The `echo: false` option disables the printing of code (only output is displayed).
+
+# Collaborator analysis
+
+We looked at how fishing pressure were spread out over the different fishing locations
+
+![Fishing pressure](figure1.png)("../figs/figure1.png")
