@@ -60,7 +60,8 @@ head(lobster_summarize)
 ```{r}
 ggplot(data = lobster_summarize, aes(x = YEAR, y=COUNT, color=SITE)) + 
   geom_line() +
-  geom_point() 
+  geom_point()
+ggsave("../figs/v1.png")
 ```
 ```{r}
 lobster_size_lrg <- lobster_clean %>% 
@@ -73,7 +74,12 @@ lobster_size_lrg
 ```
 ```{r}
 ggplot(data=lobster_size_lrg, aes(x=SIZE_BIN, y = COUNT)) +
-  geom_bar()
+  geom_col(aes(fill=SIZE_BIN)) +
+  labs(title = "Sizes of Lobsters", x = "Size", y = "Count") +
+  theme_minimal() +
+  theme(plot.background = element_rect(fill = "green"))
+
+  ggsave("../figs/v2.png")
 ```
 
 
